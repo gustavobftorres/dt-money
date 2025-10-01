@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Header } from "../../components/Header";
 import { Summary } from "../../components/Summary";
 import { SearchForm } from "./components/SearchForm";
@@ -11,6 +11,13 @@ import { TransactionsContext } from "../../contexts/TransactionsContext";
 
 export function Transactions() {
   const { transactions } = useContext(TransactionsContext);
+  const [query, setQuery] = useState("");
+
+  const filtered = query.trim().length === 0
+  ? transactions
+  : transactions.filter((t) =>
+    t.description.toLowerCase().includes(query.toLowerCase())
+  )
 
   return (
     <div>
@@ -18,10 +25,10 @@ export function Transactions() {
       <Summary />
 
       <TransactionsContainer>
-        <SearchForm />
+        <SearchForm onSearch={setQuery} />
         <TransactionsTable>
           <tbody>
-            {transactions.map((transaction) => {
+            {filtered.map((transaction) => {
               return (
                 <tr key={transaction.id}>
                   <td width="50%">{transaction.description}</td>
